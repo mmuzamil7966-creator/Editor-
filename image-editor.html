@@ -3,116 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Editing Tool</title>
+    <title>ImageOptimizer Pro - Advanced Image Editing Tool</title>
+    <meta name="description" content="Free online image editor with quality optimization. Resize, filter, and optimize your images for web with SEO-friendly output.">
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --gray: #6c757d;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
         .container {
-            width: 80%;
-            margin: 40px auto;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 3fr 1fr;
+            }
+        }
+        
+        .editor-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .tools-panel {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tool-group {
+            margin-bottom: 15px;
+        }
+        
+        .tool-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 5px;
+            -webkit-appearance: none;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .value-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background: #b5176d;
+        }
+        
+        .image-container {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background: #f8f9fa;
+        }
+        
+        #imageCanvas {
+            max-width: 100%;
+            max-height: 360px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quality-selector {
+            padding: 20px;
+            background: #eef7ff;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .quality-selector h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .quality-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .quality-option {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .quality-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .quality-option.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quality-option h4 {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .ad-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .ad-container h3 {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .ad-placeholder {
+            width: 100%;
+            height: 250px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gray);
+            font-weight: 600;
+        }
+        
+        .download-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
             text-align: center;
         }
-
-        .edit-options {
-            margin: 20px 0;
+        
+        .download-section h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
         }
-
-        #imageCanvas {
-            border: 1px solid #000;
+        
+        .info-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-top: 30px;
         }
-
-        #ad-unit {
-            margin-top: 20px;
+        
+        .info-section h2 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group button {
+                width: 100%;
+            }
+            
+            .quality-options {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <input type="file" id="imageInput" accept="image/*">
-        <button id="editButton">Edit Image</button>
-        <div class="edit-options">
-            <label for="backgroundColor">Background Color:</label>
-            <input type="color" id="backgroundColor" value="         
-            <label for="resolution">Resolution:</label>
-            <select id="resolution">
-                <option value="4k">4K</option>
-                <option value="8k">8K</option>
-                <option value="16k">16K</option>
-            </select>
-            <label for="quality">Quality:</label>
-            <select id="quality">
-                <option value="high">High Quality</option>
-                <option value="hd">HD Quality</option>
-            </select>
+    <header>
+        <div class="container">
+            <h1>ImageOptimizer Pro</h1>
+            <p>Edit and optimize your images with our powerful online tool. Adjust quality, apply filters, and download optimized images for web.</p>
         </div>
-        <canvas id="imageCanvas"></canvas>
-        <button id="saveButton">Save Image</button>
-        <div id="ad-unit">
-            <!-- Google AdSense Ad Unit Code -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="YOUR_AD_CLIENT_ID"
-                 data-ad-slot="YOUR_AD_SLOT_ID"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="editor-container">
+                <div class="tools-panel">
+                    <div class="tool-group">
+                        <h3>Upload Image</h3>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <div class="button-group">
+                            <button class="btn-primary" onclick="document.getElementById('imageUpload').click()">Select Image</button>
+                            <button class="btn-secondary" id="resetBtn">Reset</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-group">
+                        <h3>Brightness</h3>
+                        <div class="slider-container">
+                            <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
+                            <span class="value-display" id="brightnessValue">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-group">
+                        <h3>Contrast</h3>
+                        <div class="slider-container">
+                            <input type="range" id="contrastSlider" min="-100" max="100" value="0">
+                            <span class="value-display" id="contrastValue">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-group">
+                        <h3>Saturation</h3>
+                        <div class="slider-container">
+                            <input type="range" id="saturationSlider" min="-100" max="100" value="0">
+                            <span class="value-display" id="saturationValue">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-group">
+                        <h3>Filters</h3>
+                        <div class="button-group">
+                            <button class="btn-secondary filter-btn" data-filter="none">Original</button>
+                            <button class="btn-secondary filter-btn" data-filter="grayscale">Grayscale</button>
+                            <button class="btn-secondary filter-btn" data-filter="sepia">Sepia</button>
+                            <button class="btn-secondary filter-btn" data-filter="invert">Invert</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-container">
+                    <canvas id="imageCanvas">Your browser does not support the canvas element.</canvas>
+                </div>
+                
+                <div class="quality-selector">
+                    <h3>Select Output Quality</h3>
+                    <div class="quality-options">
+                        <div class="quality-option active" data-quality="100">
+                            <h4>Maximum</h4>
+                            <p>Best quality (100%)</p>
+                        </div>
+                        <div class="quality-option" data-quality="80">
+                            <h4>High</h4>
+                            <p>Good quality (80%)</p>
+                        </div>
+                        <div class="quality-option" data-quality="60">
+                            <h4>Medium</h4>
+                            <p>Balanced (60%)</p>
+                        </div>
+                        <div class="quality-option" data-quality="40">
+                            <h4>Low</h4>
+                            <p>Optimized (40%)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="ad-container">
+                    <h3>Advertisement</h3>
+                    <div class="ad-placeholder">
+                        Google AdSense Ad
+                    </div>
+                </div>
+                
+                <div class="download-section">
+                    <h3>Download Optimized Image</h3>
+                    <p>Select quality level and click download</p>
+                    <button class="btn-accent" id="downloadBtn" style="margin-top: 15px;">Download Image</button>
+                </div>
+                
+                <div class="ad-container">
+                    <h3>Advertisement</h3>
+                    <div class="ad-placeholder">
+                        Google AdSense Ad
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>About ImageOptimizer Pro</h2>
+            <p>ImageOptimizer Pro is a free online tool that allows you to edit and optimize your images for web use. Our tool helps you reduce image file size without noticeable quality loss, which improves website loading speed and SEO performance.</p>
+            <p>This tool is built with modern web technologies and works completely in your browser - your images are never uploaded to any server, ensuring complete privacy and security.</p>
         </div>
     </div>
-    <script>
-        const imageInput = document.getElementById('imageInput');
-        const editButton = document.getElementById('editButton');
-        const backgroundColorInput = document.getElementById('backgroundColor');
-        const resolutionSelect = document.getElementById('resolution');
-        const qualitySelect = document.getElementById('quality');
-        const imageCanvas = document.getElementById('imageCanvas');
-        const saveButton = document.getElementById('saveButton');
-        let currentImage;
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 ImageOptimizer Pro. All rights reserved.</p>
+            <p>This tool is built with HTML5 Canvas and JavaScript.</p>
+        </div>
+    </footer>
 
-        imageInput.addEventListener('change', (e) => {
+    <script>
+        // DOM elements
+        const imageUpload = document.getElementById('imageUpload');
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const saturationSlider = document.getElementById('saturationSlider');
+        const brightnessValue = document.getElementById('brightnessValue');
+        const contrastValue = document.getElementById('contrastValue');
+        const saturationValue = document.getElementById('saturationValue');
+        const resetBtn = document.getElementById('resetBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const qualityOptions = document.querySelectorAll('.quality-option');
+        
+        // Variables
+        let originalImage = null;
+        let currentFilters = {
+            brightness: 0,
+            contrast: 0,
+            saturation: 0,
+            filter: 'none'
+        };
+        let selectedQuality = 100;
+        
+        // Initialize canvas
+        function initCanvas() {
+            canvas.width = 800;
+            canvas.height = 500;
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#6c757d';
+            ctx.textAlign = 'center';
+            ctx.fillText('Upload an image to begin editing', canvas.width / 2, canvas.height / 2);
+        }
+        
+        // Handle image upload
+        imageUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
+            if (!file) return;
+            
             const reader = new FileReader();
-            reader.onload = () => {
-                currentImage = new Image();
-                currentImage.onload = () => {
-                    imageCanvas.width = currentImage.width;
-                    imageCanvas.height = currentImage.height;
-                    const ctx = imageCanvas.getContext('2d');
-                    ctx.drawImage(currentImage, 0, 0);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    drawImage();
                 };
-                currentImage.src = reader.result;
+                img.src = event.target.result;
             };
             reader.readAsDataURL(file);
         });
-
-        editButton.addEventListener('click', () => {
-            if (currentImage) {
-                const ctx = imageCanvas.getContext('2d');
-                ctx.fillStyle = backgroundColorInput.value;
-                ctx.fillRect(0, 0, imageCanvas.width, imageCanvas.height);
-                ctx.drawImage(currentImage, 0, 0);
-
-                // Apply resolution and quality changes here
-                const resolution = resolutionSelect.value;
-                const quality = qualitySelect.value;
-                if (resolution === '8k') {
-                    imageCanvas.width = 7680;
-                    imageCanvas.height = 4320;
-                } else if (resolution === '16k') {
-                    imageCanvas.width = 15360;
-                    imageCanvas.height = 8640;
+        
+        // Draw image on canvas with current filters
+        function drawImage() {
+            if (!originalImage) return;
+            
+            canvas.width = originalImage.width;
+            canvas.height = originalImage.height;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Apply filters
+            let filterString = '';
+            
+            if (currentFilters.brightness !== 0) {
+                filterString += `brightness(${100 + currentFilters.brightness}%) `;
+            }
+            
+            if (currentFilters.contrast !== 0) {
+                filterString += `contrast(${100 + currentFilters.contrast}%) `;
+            }
+            
+            if (currentFilters.saturation !== 0) {
+                filterString += `saturate(${100 + currentFilters.saturation}%) `;
+            }
+            
+            if (currentFilters.filter !== 'none') {
+                filterString += currentFilters.filter;
+                
+                if (currentFilters.filter === 'grayscale') {
+                    filterString += '(100%)';
+                } else if (currentFilters.filter === 'sepia') {
+                    filterString += '(100%)';
                 }
             }
+            
+            ctx.filter = filterString;
+            ctx.drawImage(originalImage, 0, 0);
+            
+            // Reset filter for next draw
+            ctx.filter = 'none';
+        }
+        
+        // Update slider value displays
+        brightnessSlider.addEventListener('input', function() {
+            brightnessValue.textContent = this.value + '%';
+            currentFilters.brightness = parseInt(this.value);
+            drawImage();
         });
-
-        saveButton.addEventListener('click', () => {
-            if (imageCanvas.toDataURL()) {
-                const link = document.createElement('a');
-                link.href = imageCanvas.toDataURL();
-                link.download = 'edited-image.png';
-                link.click();
-            }
+        
+        contrastSlider.addEventListener('input', function() {
+            contrastValue.textContent = this.value + '%';
+            currentFilters.contrast = parseInt(this.value);
+            drawImage();
         });
-    </script>
-</body>
-          </html>
-                                       
+        
+        saturationSlider.addEventListener('input', function() {
+            saturationValue.textContent = this.value + '%';
+            currentFilters.saturation = parseInt(this.value);
+            drawImage();
+        });
+        
+        // Apply filter buttons
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentFilters.filter = this.dataset.filter;
+                drawImage();
+            });
+        });
+        
+        // Quality selection
+        qualityOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                qualityOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                selectedQuality = parseInt(this.dataset.quality);
+            });
+        });
+        
+        // Reset image
+        resetBtn.addEventListener('click', function() {
+            if (!originalImage) return;
+            
+            brightnessSlider.value = 0;
+            contrastSlider.value = 0;
+            saturationSlider.value = 0;
+            brightnessValue.textContent = '0%';
+            contrastValue.textContent = '0%';
+            saturationValue.textContent = '0%';
+            
+            currentFilters = {
+                brightness: 0,
+                contrast: 0,
+                saturation: 0,
+                filter: 'none'
+            };
+            
+            // Reset active filter button
+            filterBtns.forEach(btn => {
+                if (btn.dataset.filter === 'none') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Reset quality to maximum
+            qualityOptions.forEach(opt => {
+                if (opt.dataset.quality === '100') {
+                    opt.classLi
